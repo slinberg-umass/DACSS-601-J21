@@ -1,0 +1,41 @@
+---
+title: "Homework 2 - Steve Linberg"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load the tidyverse, as always:
+
+```{r tidyverse, message = FALSE}
+library(tidyverse)
+```
+
+Set the working directory to the directory containing this script, using the 
+RStudio API (if available); if not, the WD should be set manually. The data
+file is stored in the same directory as the script.
+
+Probably overkill for this situation; the goal is to emulate Unix `$0` to make
+the script portable rather than hardwiring in a working directory. (I'm a little
+surprised that R doesn't make this easier...)
+
+```{r setwd(), message = FALSE, results = "hide"}
+if (rstudioapi::isAvailable()) {
+  # https://stackoverflow.com/a/47045368/13603796
+  setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+} else {
+  # setwd(something_else)  # <- uncomment and specify
+}
+```
+
+Load the tab-delimited file `covid-responses.tab.tsv`:
+
+```{r "load_data", message = FALSE}
+myData <- read_tsv("covid-responses.tab.tsv")
+```
+
+The resulting dataframe contains `r nrow(myData)` observations, and `r ncol(myData)` variables.

@@ -3,6 +3,7 @@ title: "Kaiser sample data analysis"
 author: "Steve Linberg / DACSS 601 (Online)"
 date: '2021-01-16'
 output: pdf_document
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}

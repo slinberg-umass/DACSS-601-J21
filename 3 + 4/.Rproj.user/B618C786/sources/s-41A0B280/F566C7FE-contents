@@ -1,0 +1,162 @@
+---
+title: "Kaiser sample data analysis"
+author: "Steve Linberg / DACSS 601 (Online)"
+date: "2021-01-16"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r tidyverse, include=FALSE}
+library(tidyverse)
+```
+
+This project explores data from a late 2020 study by the Kaiser Family Foundation. The study and its data may be found at:
+
+https://ropercenter.cornell.edu/ipoll/study/31118130
+
+Citation text: 
+
+Henry J. Kaiser Family Foundation. Kaiser Family Foundation Poll: December 2020 Kaiser Health Tracking Poll/COVID-19 Vaccine Monitor, 2020 [Dataset]. Roper #31118130, Version 2. SSRS [producer]. Cornell University, Ithaca, NY: Roper Center for Public Opinion Research [distributor]. doi:10.25940/ROPER-31118130
+
+It is submitted as homeworks 3 and 4 for DACCS 601, showing an import/cleaup process and a line of inquiry into the possible correlation of gender and age among the respondents.
+
+```{r load raw_data}
+raw_data <- read_csv("31118130.csv")
+raw_data
+```
+
+Before looking into potential questions relating to gender in this dataset, it is worth looking at the distributions of age within gender among the survey's respondents to see if there is any correlation; if gender is skewed by age at all, it would complicate any observations of other columns using gender as a dependent variable, because it could include hidden bias involving age as well as gender.
+
+As this dataset contains `r nrow(raw_data)` observations of `r ncol(raw_data)` variables, we'll filter the raw data down to what is minimally necessary to examine age and gender. The `d1` column contains gender, and `age` (column 79) contains a textual representation of the respondent's age.
+
+A quick frequency table of the `d1` fields shows two clean values:
+
+```{r freq_table_gender}
+d1_freq = table(raw_data$d1)
+d1_freq
+```
+
+There are `r d1_freq[['Female']]` observations for "Female", and `r d1_freq[['Male']]` for "Male". The `d1` gender data is well-formed and does not need any further work (beyond renaming).
+
+`Age` is slightly more complicated, however; although it looks like an integer, it is actually a `<chr>` variable type, and it has some non-numeric values:
+
+```{r}
+summary(raw_data$age)
+```
+
+
+```{r freq_table_age}
+sort(unique(raw_data[["age"]]))
+```
+So before we can work with age as a numeric quantity, we have to first strip out the values `97 or older` and `Refused`, and then convert the remaining string values to numeric.
+
+Rather than enumerate the specific values to remove, it is cleaner to simply filter out any value that cannot be converted to numeric. `as.numeric` is a good engine for this process; any input that can't be converted to numeric returns `NA`, which can then be filtered. For efficiency, we make a new `data.frame` consisting of only the information we want (gender and age), named in sensible ways.
+
+```{r}
+age_data <- raw_data %>%
+  # create a new field with the numeric value of "age"
+  mutate(numeric_age = suppressWarnings(as.numeric(age))) %>%
+  # filter rows whose numeric conversion of "age" is "NA"
+  filter(!is.na(numeric_age)) %>%
+  # rename "d1" as "gender"
+  rename(gender = d1) %>%
+  # include only gender and age in the new frame.
+  select(gender,numeric_age)
+
+# See how many rows we removed.
+removed_rows <- nrow(raw_data) - nrow(age_data)
+removed_rows_pct = round((removed_rows / nrow(raw_data)) * 100, 2)
+```
+
+We removed `r removed_rows` rows, or `r removed_rows_pct`%, of the original data, because their age values could not be converted to numeric. The question of whether this is an acceptable threshold is not addressed here, except to observe that we are only testing here to see if age and gender correlate in the original data set; we have not removed any data from the original set, and will continue our investigation with it, not with this extract.
+
+Now that the remaining age data is numeric, we can look at means and standard deviations of age by gender:
+
+```{r}
+age_data %>%
+  group_by(gender) %>%
+  summarize(mean_age = mean(numeric_age), sd_age = sd(numeric_age))
+```
+
+We have a similar SD for the genders, but the mean age for women is approximately 2.25 years higher than for men. 
+
+Running a T-test on gender and age compares the standard error of the means to see if there are statistically significant differences. Our null hypothesis $H_0$ would be that the means are equal, meaning there is no statistically significant difference between the age means by gender.
+
+```{r}
+age_data %>%
+    t.test(numeric_age ~ gender, data = .)
+```
+
+The `p-value` of `0.014` shows that the null hypothesis - that the two distributions are equal in means, and that therefore age and gender are not in any way correlated in the data - should be rejected. The `t` value of `2.45` shows a significant difference in the error of the means. 
+
+Since we are seeing *some* correlation between age and gender in the survey data, let's get a look at it to help us understand it better. First, we can plot the distributions of ages, for both genders together and each individually, with a density line overlaid for clarity:
+
+```{r}
+ggplot(age_data, aes(`numeric_age`)) + 
+  labs(title = "Ages, combined genders", x = "Age") +
+  geom_histogram(aes(y = ..density..)) + geom_density(color="red")
+ggplot(filter(age_data, gender == "Male"), aes(`numeric_age`)) +
+  labs(title = "Ages - Male", x = "Age") +
+  geom_histogram(aes(y = ..density..)) + geom_density(color="red")
+ggplot(filter(age_data, gender == "Female"), aes(`numeric_age`)) +
+  labs(title = "Ages - Female", x = "Age") +
+  geom_histogram(aes(y = ..density..)) + geom_density(color="red")
+```
+From these plots, we can see that the age distribution does not appear to be normal, and that there is a visible difference in the distribution shapes, but the granularity of the results is a bit blocky and the results are hard to compare. It might be easier to get a sense of gender distribution by adding color and combining the genders into a single graph. The `dodge` parameter puts the colored bars for each age adjacent to each other:
+
+```{r}
+age_data %>% 
+  ggplot(aes(numeric_age, fill = gender), xlab="gender") + 
+  geom_bar(stat = "count", position = "dodge", width = 0.5)
+```
+This works, but is visually noisy, as the bars are very narrow due to their number; we are essentially treating `age` as a categorical, or possibly ordinal, variable in this case, which could be a matter of interpretation, but probably isn't its best representation here.
+
+A density plot with fewer increments in the underlying histogram gives a much clearer view:
+
+```{r}
+age_data %>% 
+  ggplot(aes(`numeric_age`)) + 
+  labs(title = "Ages and gender of respondents", x = "Age") +
+  scale_x_continuous(breaks = round(seq(min(age_data$numeric_age), max(age_data$numeric_age), by = 4),1)) +
+  geom_histogram(aes(y = ..density.., color = gender, fill = gender),  
+                 alpha = 0.4, position = "dodge", bins=25) + 
+  geom_density(aes(color = gender), size =1)
+```
+From this visualization, we can draw the following conclusions:
+
+1. The proportion of males in the survey is slightly higher than that of females until approximately age 60;
+1. There is a significant spike in the representation of women beginning at approximately age 58, and the percentage of females in the 60-72 age range is considerably higher than that of males;
+1. Women represent a consistently higher percentage of respondents for the remainder of the age range, to its maximum;
+1. The ages of respondents, both combined and grouped by gender, appear not to follow normal distributions.
+
+All of this is to be expected, to some degree; women in general live longer then men, so it's not surprising to see larger percentages of women at older ages, and depending on the study's selection methods (not discussed here), perfectly normal age distributions would be surprising to find.
+
+Before deciding what to do about this skew in the data, it's worth investigating the question of whether our t.test was valid in the first place. Most of the literature on t.test (Wasserman, [wikipedia](https://en.wikipedia.org/wiki/Student%27s_t-test#Assumptions)) says that it is preferred for data that follows a normal distribution, and is less robust in non-normal distributions, notably with small samples. Considering the surprising amount of apparent academic disagreement on this subject, it's helpful to run a couple of additional tests to shed as much light as possible on the situation.
+
+First, the observation that the data does not appear to follow a normal distribution is just that, an observation. We want to be certain that the distribution is not normal, and to not rely solely on a visual inspection. The Shapiro-Wilks test will calculate the probability of a distribution being normal; we can run it on the combined data, and on each gender's data individually:
+
+```{r}
+shapiro.test(age_data$numeric_age)
+shapiro.test(filter(age_data, gender == "Male")$numeric_age)
+shapiro.test(filter(age_data, gender == "Female")$numeric_age)
+```
+The `p-values` in the Shapiro-Wilk test show that both the combined distributions of `numeric_age`, and those grouped by gender, have vanishingly small chances of being normal. This confirms what we observed optically.
+
+Second, in this case, we have `r nrow(age_data)` observations: well above the [20](https://www.statisticshowto.com/probability-and-statistics/non-normal-distributions/)-[100](https://thestatsgeek.com/2013/09/28/the-t-test-and-robustness-to-non-normality/) thresholds [variously suggested](https://stats.stackexchange.com/a/9575) as a minimum $N$ for the t-test's validity, but another test, the Wilcoxon-Mann-Whitney U test, can be used in place of the t-test and is robust with non-normalized data. Once source [suggests](https://stats.stackexchange.com/a/9575) that it's a preferable drop-in replacement for t-tests in nearly all cases, except where $N$ is [very small (<6)](https://stats.stackexchange.com/questions/121852/how-to-choose-between-t-test-or-non-parametric-test-e-g-wilcoxon-in-small-sam), or in certain circumstances where computational power might be limited.
+
+```{r}
+wilcox.test(numeric_age ~ gender, data=age_data)
+```
+
+As with the t-test, the Wincoxon test's `p-value` less than 0.05 shows that the means of the distributions are very unlikely to be equivalent, and that therefore we cannot be certain that gender-based inquiries in this data set will not contain hidden age biases. It's noteworthy that the `p-value`s for the two tests are very close: 0.01445 for the t-test, and 0.01314 for the Wincoxon test, suggesting that the t-test gave a robust result in this case even with the skews present in the data.
+
+This does not solve the problem of what to do about the skew. The dataset being used here does contain a weighting factor, and this will be explored in the final paper.
+
+# References
+
+Wasserman, L. (2004). *All of Statistics: A Concise Course in Statistical Inference.* New York: Springer. ISBN: 978-1-4419-2322-6, p.170
+
+ 

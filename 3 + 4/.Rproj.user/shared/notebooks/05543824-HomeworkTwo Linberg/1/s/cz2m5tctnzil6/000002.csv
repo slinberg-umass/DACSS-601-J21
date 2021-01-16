@@ -1,0 +1,8 @@
+"0","```r
+if (rstudioapi::isAvailable()) {
+  # https://stackoverflow.com/a/47045368/13603796
+  setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+} else {
+  # setwd(something_else)  # <- uncomment and specify
+}
+```"

@@ -2,9 +2,7 @@
 title: "Kaiser sample data analysis"
 author: "Steve Linberg / DACSS 601 (Online)"
 date: '2021-01-16'
-output:
-  html_document:
-    df_print: paged
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}

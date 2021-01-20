@@ -18,3 +18,31 @@ Note: the data file `31118130.csv` is a symlink to the original file in the "../
 raw_data <- read_csv("31118130.csv")
 raw_data
 ```
+Opening question: among survey respondents who respond "refuse to answer" to the question of whom they voted for for president, is there a detectable bias? Are liberals or conservatives, Biden or Trump or "other" voters, more likely to do this? Is there a way we can tell?
+
+We can't know for sure, but the question is, can we make a data-supported argument, based on the data in this survey, that supports or rejects this idea?
+
+First, let's get a breakdown of the responses to the question:
+
+```{r}
+table(raw_data$voted2)
+# hat tip to https://stackoverflow.com/a/45386128/13603796
+table(raw_data$voted2) %>% prop.table() %>% `*`(100) %>% round(2)
+```
+So 8.5% of respondents refused to answer the question. That's a significant amount, 1 in 12.
+
+First, how do they lean? There are many possible variables we could look at; let's start with `ideology`:
+
+```{r}
+table(raw_data$ideology)
+```
+
+Let's break this down.
+
+```{r}
+ideology_by_refused_voted2 <- raw_data %>%
+  select(ideology, voted2) %>%
+  filter(voted2 == "Refused")
+table(ideology_by_refused_voted2$ideology)
+```
+

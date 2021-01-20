@@ -37,7 +37,7 @@ First, how do they lean? There are many possible variables we could look at; let
 table(raw_data$ideology)
 ```
 
-Let's break this down.
+Let's start to break this down. 
 
 ```{r}
 ideology_by_refused_voted2 <- raw_data %>%

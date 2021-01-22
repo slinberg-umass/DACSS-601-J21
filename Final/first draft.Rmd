@@ -1,5 +1,8 @@
 ---
-title: "First draft"
+title: "Non- and private-voting trends: Kaiser survey data 12-2020"
+subtitle: DACSS 601 Final Paper
+author: Steve Linberg
+date: 23 January 2021
 output: html_notebook
 ---
 
@@ -10,10 +13,142 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-This document is a narrative of explorations of the Kaiser dataset, prior to the final paper.
+## Introduction
+>(1-2 pages) Define the research question or problem you seek to address. What animated your concern with this research question? What are you arguing?
 
-Note: the data file `31118130.csv` is a symlink to the original file in the "../3 + 4" directory in this repository. 
+In both the 2016 and 2020 U.S. presidential elections, there was a lot of discussion in the media and among political pundits about the challenges of predicting the outcomes. Nearly every major news source and polling organization reported an overwhelming polling advantage for Democratic candidate Hillary Clinton in the 2016 election, right up to election day itself, with most forecasts at or above a [90% likelihood of her victory](https://www.reuters.com/article/us-usa-election-poll/clinton-has-90-percent-chance-of-winning-reuters-ipsos-states-of-the-nation-idUSKBN1322J1). Most polls [(with some early exceptions)](https://fortune.com/2016/05/25/election-polls-hillary-clinton-donald-trump/) showed her with a comfortable lead throughout the primary season.  Republican Donald Trump's victory in 2016 was a startling surprise for many observers (and voters).
+
+Similarly, in 2020, most major observers expected, and predicted, strong Democratic gains in the House and Senate, along with capturing the White House (the "blue wave"). While Democrats did win the presidency, it was by a narrower margin than some predicted; gains in the Senate were smaller than thought to be likely (Democrats gained 4 seats, but 5 races thought to be competitive (Iowa, Main, Montana, North and South Carolina) remained in Republican hands), and Democrats actually lost 11 seats in the House. Once again, the strength of Republican turnout was stronger than many pundits (and statisticians) expected.
+
+One major theory that has sought to explain this discrepancy between predicted and actual outcomes is the idea of the "hidden voter," where polls fail to take into account a significant portion of the voting population because they either (a) do not participate in polls, or (b) do not respond truthfully when asked which candidate(s) they support. ~~Reasons for this could be imagined (a wish to avoid social pressure for openly supporting controversial candidates, or even a desire to actively sabotage polls with misleading information so as to discredit political polling in general), but are not addressed here.~~
+
+Anyone concerned about political polling - and politics in general - should be concerned about the accuracy of major predictions in the recent national elections. If it's true that polling is missing a significant portion of the electorate, there are several vectors of action that could be taken up in an effort to better understand the unreported - or misreported - aggregate views of the voting populace. One would be to examine polling methods themselves and see if there are processes that need to be amended to capture a more representative view. Another could be to focus on the quality of polls themselves, and the wording of questions and the options offered as responses, though there is no particular reason to suspect that this has been a recent issue warranting elevated concern. A third would be to look deeper into existing data, and see if there is useful information that could be gleaned from it which could guide future polling efforts, using what may be revealed from a more focused examination of a possibly underestimated or undercounted segment of voters.
+
+This paper offers a few observations along the latter trajectory, using a December 2020 study by the Kaiser Family Foundation which looks at opinions on a range of questions relating to COVID-19, the 2020 election, and aspects of political ideology, with a particular focus on respondents who either declined to divulge who they had voted for, or who did not vote at all.  
+
+As we will see, there are strong trends towards conservative ideologies for respondents who did not say which Presidential candidate they voted for in 2020, and 
+
+# and what? about nonvoters
+
+
+
+## Data
+>(2-3 pages) Describe your data source. Why is this an appropriate choice? What are the variables that you are specifically interested in? Describe those variables, both numerically and visually.
 
 ```{r load raw_data, include=FALSE}
+# Note: the data file `31118130.csv` is a symlink to the original file in the "../3 + 4" directory in this repository. 
 raw_data <- read_csv("31118130.csv")
+num_rows <- nrow(raw_data)
+num_cols <- ncol(raw_data)
 ```
+
+The data source for this paper is the Kaiser Family Foundation poll *December 2020 Kaiser Health Tracking Poll/COVID-19 Vaccine Monitor*, which may be seen at:
+
+https://ropercenter.cornell.edu/ipoll/study/31118130
+
+Citation text: 
+
+Henry J. Kaiser Family Foundation. Kaiser Family Foundation Poll: December 2020 Kaiser Health Tracking Poll/COVID-19 Vaccine Monitor, 2020 [Dataset]. Roper #31118130, Version 2. SSRS [producer]. Cornell University, Ithaca, NY: Roper Center for Public Opinion Research [distributor]. doi:10.25940/ROPER-31118130
+
+It consists of `r nrow(raw_data)` observations of `r ncol(raw_data)` variables, resulting from a total of approximately 40 questions and conducted by telephone. It includes an oversample of prepaid ("pay as you go") telephone numbers (25% of the total number of cell phone numbers dialed). The majority of the questions are concerned with the Affordable Care Act, COVID-19, the 2020 U.S. presidential election, and political ideology.
+
+Two key variables, `ideology` and `voted2`, provide an immediate sense of the overall political leanings of respondents. 
+`ideology` is a response to the question:
+
+> Would you say your views in most political matters are liberal, moderate, or conservative?
+
+The options given for response were:
+
+- Liberal
+- Moderate
+- Conservative
+- **(DO NOT READ)** Don't know
+- **(DO NOT READ)** Refused
+
+Given these options, the breakdown of respondents' answers is:
+
+```{r, echo=FALSE}
+ideology_count <- rev(sort(table(raw_data$ideology)))
+ideology_count
+
+raw_data %>% 
+#  ggplot(aes(x=ideology) ) +
+  ggplot(aes(x=reorder(ideology,ideology,function(x)-length(x))
+# Color doesn't add to this plot, the colors don't mean anything
+# and there's no reason to hard-code categories
+#             ,fill=ideology
+  )) +
+  geom_bar(show.legend = FALSE) +
+  labs(title = "ROPER-31118130 poll respondents self-reported ideology",
+       x = "")
+```
+```{r echo=FALSE}
+ideology_count_mcl <- ideology_count['Moderate'] + ideology_count['Conservative'] + ideology_count['Liberal']
+```
+
+A small number of respondents either didn't know or didn't disclose their political ideology, but among the `r ideology_count_mcl` that did, 
+`r ideology_count['Moderate']` (`r round(100 * ideology_count['Moderate'] / ideology_count_mcl,1)`%) 
+identified as "Moderate", 
+`r ideology_count['Conservative']` (`r round(100 * ideology_count['Conservative'] / ideology_count_mcl,1)`%) 
+identified as "Conservative," and 
+`r ideology_count['Liberal']` (`r round(100 * ideology_count['Liberal'] / ideology_count_mcl,1)`%) 
+identified as "Liberal",
+
+As this is a self-reported description, we must be careful in drawing too deeply from this variable in isolation, as the labels "Moderate," "Conservative" and "Liberal" are not defined by the survey questions, but they do suggest a reasonable balance of political ideologies if we consider them as roughly "Center," "Right" and "Left" (respectively).
+
+A look at the `voted2` variable yields some interesting observations. The text of the question is
+
+> In the election for U.S. president, did you vote for (Donald Trump) or (Joe Biden), or someone else?
+
+The response options were:
+
+- Donald Trump
+- Joe Biden
+- Someone else (Specify)
+- **(DO NOT READ)** Don’t know
+- **(DO NOT READ)** Refused
+
+```{r, echo=FALSE}
+voted2_count <- rev(sort(table(raw_data$voted2)))
+voted2_count
+
+raw_data %>% 
+#  ggplot(aes(x=ideology) ) +
+  ggplot(aes(x=reorder(voted2,voted2,function(x)-length(x))
+# Color doesn't add to this plot, the colors don't mean anything
+# and there's no reason to hard-code categories
+#             ,fill=ideology
+  )) +
+  geom_bar(show.legend = FALSE) +
+  labs(title = "ROPER-31118130 poll respondents 2020 presidential vote",
+       x = "")
+```
+There are three noteworthy observations here:
+
+```{r echo=FALSE}
+voted2_count_btr <- voted2_count['Joe Biden'] + voted2_count['Donald Trump'] + voted2_count['Refused'] +
+ voted2_count['Someone else'] + voted2_count["Don't know"]
+```
+1. **A strong preference towards Joe Biden**<br>
+Despite a somewhat balanced `ideology` variable, of the `r voted2_count_btr` respondents who voted in the election,
+`r voted2_count['Joe Biden']` (`r round(100 * voted2_count['Joe Biden'] / voted2_count_btr,1)`%) voted for Joe Biden,
+`r voted2_count['Donald Trump']` (`r round(100 * voted2_count['Donald Trump'] / voted2_count_btr,1)`%) voted for Donald Trump, and 
+`r voted2_count['Refused']` (`r round(100 * voted2_count['Refused'] / voted2_count_btr,1)`%) refused to answer the question. Joe Biden won the national popular vote with [51.3% to Donald Trump's 46.9%](https://cookpolitical.com/2020-national-popular-vote-tracker), which means the results from this survey disproportionately represent Joe Biden voters as compared the national totals.
+
+1. **A significant number of non-votes**<br>
+(details)
+1. **A significant number of "Refused" (to answer) responses**<br>
+foo
+
+
+## Visualization
+>(2-3 pages): Develop a visualization that best addresses your research question. Describe the visualization in detail. Then, explain what other options you considered for visualizing the data, and explain why the option you chose was the best option.
+
+## Reflection
+>(2-3 pages): Describe your experience with the process. What decisions in your pipeline are you most concerned about potentially influencing your findings? What were the most challenging and time-consuming aspects of the project? What do you wish you had been able to do? If you were to continue the project, what would your next steps be?
+
+## Conclusion
+>(1-2 pages): Discuss your research question again briefly and state succinctly the preliminary findings. Also discuss the potential ramifications of action – or inaction – on this policy.
+
+## Bibliography
+>Every paper should include a bibliography which appropriately cites anything used in the formulation of the paper. If you have questions, please talk to me. Do not plagiarize.

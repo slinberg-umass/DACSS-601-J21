@@ -1,6 +1,6 @@
 ---
 title: "Final-explorations"
-output: pdf_document
+output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
@@ -22,16 +22,19 @@ Opening question: among survey respondents who respond "refuse to answer" to the
 
 We can't know for sure, but the question is, can we make a data-supported argument, based on the data in this survey, that supports or rejects this idea?
 
-First, let's get a breakdown of the responses to the question:
+First, let's get a breakdown of the responses to the question "In the election for U.S. president, did you vote for (Donald Trump) or (Joe Biden), or someone else?"
 
 ```{r}
 table(raw_data$voted2)
 # hat tip to https://stackoverflow.com/a/45386128/13603796
-table(raw_data$voted2) %>% prop.table() %>% `*`(100) %>% round(2)
+table(raw_data$voted2) %>% 
+  prop.table() %>% 
+  `*`(100) %>% 
+  round(2)
 ```
 So 8.5% of respondents refused to answer the question. That's a significant amount, 1 in 12.
 
-First, how do they lean? There are many possible variables we could look at; let's start with `ideology`:
+First, how do they lean politically? There are many possible variables we could look at; let's start with `ideology`, a response to the question "Would you say your views in most political matters are liberal, moderate, or conservative?"
 
 ```{r}
 table(raw_data$ideology)
@@ -44,5 +47,53 @@ ideology_by_refused_voted2 <- raw_data %>%
   select(ideology, voted2) %>%
   filter(voted2 == "Refused")
 table(ideology_by_refused_voted2$ideology)
+```
+Among those who did answer, it looks like a fairly pronounced conservative tilt for people who refuse to answer. Let's get a visual:
+
+```{r}
+ideology_by_refused_voted2 %>% 
+#  ggplot(aes(x=ideology) ) +
+  ggplot(aes(x=reorder(ideology,ideology,function(x)-length(x))
+# Color doesn't add to this plot, the colors don't mean anything
+# and there's no reason to hard-code categories
+#             ,fill=ideology
+  )) +
+  geom_bar(show.legend = FALSE) +
+  labs(title = "\"Refused to answer: voted2\" by ideology",
+       x = "")
+```
+We could invest time in prettying this up more, but it's just a first glance. Self-identified "Conservative" and "Moderate" respondents both refused to answer the `voted2` question by a more than two-to-one rate over "Liberal" respondents, with a slightly smaller number also refusing to answer this question, and a few "Don't Know" responses.
+
+Let's get a heatmap of ideology and voted, just for the exercise. Then look at the x-tabs and run a chi-squared test.
+
+```{r}
+freq_ideology_by_voted2 <- raw_data %>%
+  count(ideology, voted2)
+
+raw_data %>%
+  ggplot(mapping=aes(x = ideology, fill=voted2)) +
+  geom_bar() +
+  scale_fill_hue()
+
+freq_ideology_by_voted2 %>%
+  ggplot(mapping=aes(x = ideology, y=voted2)) +
+  geom_tile(mapping = aes(fill=n))
+```
+
+Make some new data frames with cleaned up versions of voted2 and q5 with "I don't know" removed.
+
+```{r}
+cleaned_voted2 <- raw_data %>%
+  select(voted2, q5) %>%
+  filter(!is.na(voted2) & !is.na(q5)) %>%
+  filter(q5 != "Don't know" & voted2 != "Don't know" & q5 != "Refused")
+```
+
+```{r}
+cleaned_voted2 %>%
+  count(q5, voted2) %>%
+  ggplot(mapping=aes(x = voted2, y=q5)) +
+    geom_tile(mapping = aes(fill=n))
+
 ```
 

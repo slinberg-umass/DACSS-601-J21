@@ -1,0 +1,19 @@
+---
+title: "First draft"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r tidyverse, include=FALSE}
+library(tidyverse)
+```
+
+This document is a narrative of explorations of the Kaiser dataset, prior to the final paper.
+
+Note: the data file `31118130.csv` is a symlink to the original file in the "../3 + 4" directory in this repository. 
+
+```{r load raw_data, include=FALSE}
+raw_data <- read_csv("31118130.csv")
+```

@@ -1,6 +1,9 @@
 ---
 title: "Chisq.test explorations"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
 ---
 
 The question is: can `chisq.test()` be used to compare the frequency distributions of a table of data, and a subset of that table? More specifically, we have a data set that includes columns for "ideology" (Conservative, Moderate, Liberal, Refused, Don't Know), and for "voted" (Biden, Trump, Refused, Someone Else, Don't Know). We want to see if the distribution of "ideology" for the subset of rows for which "voted" = "Refused" (refused to say) is the same as the distribution of "ideology" for all rows, or if it tilts in some direction.

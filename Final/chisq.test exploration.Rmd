@@ -1,0 +1,92 @@
+---
+title: "Chisq.test explorations"
+output: html_notebook
+---
+
+The question is: can `chisq.test()` be used to compare the frequency distributions of a table of data, and a subset of that table? More specifically, we have a data set that includes columns for "ideology" (Conservative, Moderate, Liberal, Refused, Don't Know), and for "voted" (Biden, Trump, Refused, Someone Else, Don't Know). We want to see if the distribution of "ideology" for the subset of rows for which "voted" = "Refused" (refused to say) is the same as the distribution of "ideology" for all rows, or if it tilts in some direction.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r tidyverse, include=FALSE}
+library(tidyverse)
+```
+
+```{r load raw_data}
+# Note: the data file `31118130.csv` is a symlink to the original file in the "../3 + 4" directory in this repository. 
+raw_data <- read_csv("31118130.csv")
+```
+
+First step: get the frequency distribution for "ideology" for the whole set, which is 1676 rows.
+
+```{r}
+ideology_count <- table(raw_data$ideology)
+ideology_count
+```
+
+Then extract the subset of rows we want to examine, based on the answer to one question, and get the frequency distribution of that subset, to compare for proportionality with the full set.
+
+```{r}
+ideology_by_refused_voted2 <- raw_data %>%
+  select(ideology, voted2) %>%
+  filter(voted2 == "Refused")
+voted2_refused_count <- table(ideology_by_refused_voted2$ideology)
+voted2_refused_count
+```
+
+Then run a chisq.test on the two distributions. First off: is this comparison valid? The objects we're comparing are `table`s. Not sure if that's an acceptable input type for `chisq.test()`.
+```{r}
+class(ideology_count)
+class(voted2_refused_count)
+```
+
+```{r}
+chisq.test(ideology_count,voted2_refused_count)
+```
+The function doesn't complain about its inputs, and returns a p-value of `0.2202`, meaning we can't reject our null hypothesis and the differences in the distributions are explainable by chance. Bu t I don't know if this result is meaningful, because I don't know if the call made sense.
+
+To force it another way, build a manual data set with these numbers, using xtabs to build cross-tabs, manually entering the data from the above tables, which (are? aren't?) the same thing as a frequency distribution:
+
+```{r}
+group <- c("all", "all", "all", "all", "all", "refused", "refused", "refused", "refused", "refused")
+ideology <- c("Moderate", "Conservative", "Liberal",  "Don't Know", "Refused", "Moderate", "Conservative", "Liberal",  "Don't Know", "Refused")
+totals <- c(617,527,424,68,40,37,38,16,6,14)
+A <- data.frame(group,ideology,totals)
+A
+A_xtabs <- xtabs(totals~group+ideology,data=A)
+A_xtabs
+```
+
+Now run the `chisq.test()` on this xtab object:
+
+```{r}
+chisq.test(A_xtabs,correct=F)
+```
+
+This gives a very different p-value, showing that the difference in the distributions IS statistically significant and we can reject the null hypothesis.
+
+The input this time is still a table, and also an "xtabs" object:
+
+```{r}
+class(A_xtabs)
+
+```
+
+Finally, run a `chisq.test()` with a manual version of the dataset and a calculated expected values (as ratios) list, based on the subset as the observed values, and the expected values as ratios of the full set values to the size of the set. I woulc expect this test to give the same p-value as the above test:
+
+```{r}
+obs <- c(37,38,16,6,14)
+exp <- c(617/1676,527/1676,424/1676,68/1676,40/1676)
+chisq.test(obs, p=exp)
+```
+
+It returns 3.297e-11... basically zero, but still 3 orders of magnitude off the other very tiny p-value of 1.596e-08. It also complains that the X-squared approximation may be off.
+
+Running the Fisher test gives a different, but still very tiny P-value:
+
+```{r}
+fisher.test(A_xtabs)
+```
+
+
+...what am I doing wrong?

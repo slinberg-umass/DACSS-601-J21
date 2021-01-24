@@ -18,30 +18,18 @@ library(apa)
 ```
 
 ## Introduction
->(1-2 pages) Define the research question or problem you seek to address. What animated your concern with this research question? What are you arguing?
-
-<span style="background: yellow">Most of this is wordy crap. Stop posing.</span>
 
 In both the 2016 and 2020 U.S. presidential elections, there was a great deal of discussion in the media and among political pundits about the challenges of predicting the outcomes. Nearly every major news source and polling organization reported a significant polling advantage for Democratic candidate Hillary Clinton in the 2016 election, right up to election day, with most forecasts at or above a [90% likelihood](https://www.reuters.com/article/us-usa-election-poll/clinton-has-90-percent-chance-of-winning-reuters-ipsos-states-of-the-nation-idUSKBN1322J1) of a Clinton victory. Most major polls [(with some early exceptions)](https://fortune.com/2016/05/25/election-polls-hillary-clinton-donald-trump/) showed her with a comfortable lead throughout the primary season.  Republican Donald Trump's victory in 2016 was a startling surprise for many observers (and voters).
 
 Similarly, in 2020, most major polls and forecsts expected, and predicted, strong Democratic gains in the House and Senate, along with capturing the White House (in what was commonly referred to as the incoming "blue wave"). While Democrats did win the presidency, it was by a narrower margin than some predicted; gains in the Senate were smaller than thought to be likely (Democrats gained 4 seats, but 5 races thought to be competitive remained in Republican hands[^dem_races]), and Democrats actually lost 11 seats in the House. Once again, the strength of Republican turnout was stronger than many pundits (and statisticians) expected.
 
-One major theory that has sought to explain this discrepancy between predicted and actual outcomes is the idea of the "hidden voter," where polls fail to take into account a significant portion of the voting population because they either (a) do not participate in polls, or (b) do not respond truthfully when asked which candidate(s) they support. One possible reason for this could involve an aversion to unwanted social pressure from openly supporting controversial candidates. Another could be the sampling mechanisms of the polls themselves, with questions about whether and how they are reaching accurately representative samples of the voting population.
+One popular theory that has sought to explain this discrepancy between predicted and actual outcomes is the idea of the "hidden voter," where polls fail to take into account a significant portion of the voting population because they either (a) do not participate in polls, or (b) do not respond truthfully when asked which candidate(s) they support. One possible reason for this could involve an aversion to unwanted social pressure from openly supporting controversial candidates. Put simply, the theory was that a lot of voters secretly supported, and voted for, Donald Trump, but did not openly support him or answer truthfully in polls.
 
-Anyone concerned about political polling - and politics in general - should be equally concerned about the accuracy of major predictions in the recent national elections. If it's true that polling is somehow missing a significant portion of the electorate - whether by omission or misinterpretation - there are several vectors of action that could be taken up in an effort to obtain more accurate polling. One might be to examine polling sampling methods and see if there are processes that need to be amended to capture a more representative range of views - using different modes in an effort to reach different (or) populations. Another is always to examine the granularity of questions and of offered responses, to be sure the results of the polls are not unnecessarily constrained by the wording of questions; basic quality control, though there is no 
+There has been a great deal of speculation about what might explain thus undercounting or underestimating of support for conservative candidates in the national elections since 2016. Theories abound, from methodological critiques of polling methodologies to rather more fantastical suspicions of deliberate sabotage by poll respondents in an effort to discredit polling and the media in general. In this paper, we will look at a more benign theory: that conservative voters are less likely to disclose their political ideology or voting choices, creating an underestimation of their electoral power that is not accounted for by polling.
 
-There are many vectors of action that could be taken up to improve polling results, from basic quality-control measures around survey composition, question wording and response granularity, to tuning outreach modes and procedures to ensure the most representative possible sampling of the electorate. A third is always to look deeper into existing polling data, and see if there is useful information that could be gleaned from it which could guide future polling efforts, using what may be revealed from a more focused examination of a possibly underestimated or undercounted segment of voters.
-
-This paper offers a few observations along the latter trajectory, using a December 2020 study by the Kaiser Family Foundation which looks at opinions on a range of questions relating to COVID-19, the 2020 election, and aspects of political ideology, with a particular focus on respondents who either declined to divulge who they had voted for, or who did not vote at all.  
-
-As we will see, there are strong trends towards conservative ideologies for respondents who did not say which Presidential candidate they voted for in 2020, and 
-
-# and what? about nonvoters
-
-
+We will use a December 2020 study by the Kaiser Family Foundation which looks at opinions on a range of questions relating to COVID-19, the 2020 election, and aspects of political ideology. Although the scope of the survey is broad, we will focus on respondents who either declined to divulge who they had voted for, what their ideology is, or both, and see if we can find data to support the notion that these voters are likely to be more conservative than liberal.
 
 ## Data
->(2-3 pages) Describe your data source. Why is this an appropriate choice? What are the variables that you are specifically interested in? Describe those variables, both numerically and visually.
 
 ```{r load raw_data, include=FALSE}
 # Note: the data file `31118130.csv` is a symlink to the original file in the "../3 + 4" directory in this repository. 
@@ -172,7 +160,7 @@ As noted above, `r voted2_ct_refused` respondents (`r voted_pct_refused`% of the
 
 This final observation, however, does not imply that the distribution of ideology within the group of voters who refused to answer who they voted for does not fit the national average, and this is the group we are going to investigate further, with the goal of trying to get a sense of how these respondents might have voted based on answers to other questions from the survey.
 
-### Observation 1: ideology of "Refused" voters
+### Observation 1: The ideology of "Refused" voters
 
 The most obvious observation to make would be: how do the voters who refused to answer who they voted for for president in the 2020 election (hereafter "private voters") self-report their political views?
 
@@ -255,9 +243,9 @@ These differences are statistically significant (`chisq.test`: (`r chisq_apa(ide
 
 ### Observation 2: Hidden data in "Refused" ideology category
 
-However, there is still one problem with this conclusion: As we can see in the chart, 12.6% of "private voters" also declined to share their ideology, a far higher percentage than that of the total of all voters. With perfect knowledge, we could eliminate the "Refused" column and redistribute it among the other categories. Although such a scenario would seem to be very unlikely, what if it were true that most of the voters who refused to disclose their ideology were in fact Liberal? If we were to move the bulk of the "Refused" voters into the Liberal column, we get a chart with fewer overall differences.
+However, there is still one problem with this conclusion: As we can see in the chart, 12.6% of "private voters" also declined to share their ideology, a far higher percentage than that of the total of all voters. With perfect knowledge, we could reduce the "Refused" column down to a level similar to the total percentage of 2.4%, and redistribute most of among the other categories. Although such a scenario would seem to be very unlikely, what if it were true that most of the voters who refused to disclose their ideology were in fact Liberal? If we were to move the bulk of the "Refused" voters into the Liberal column, we get a chart with fewer overall differences.
 
-The following chart represents ***this hypothetical scenario, and not the actual data from the study***; it is for visualization and analysis only. We will make an assumption that 11 of the 14 "private voters" who refused to disclose their ideology are in fact Liberal, and adjust the data accordingly. This iwould represent approximately 80% of the total of the "private voters".
+The following chart represents ***this hypothetical scenario, and not the actual data from the study***; it is for visualization and analysis only. We will make an assumption that 11 of the 14 "private voters" who refused to disclose their ideology are in fact Liberal, and adjust the data accordingly. This would represent approximately 80% of the total of the "private voters".
 
 ```{r fake_ideology_props plot, echo=FALSE, warning=FALSE}
 # Make a copy of the ideology_props data.frame
@@ -337,7 +325,7 @@ This merits further investigation. How can we show that this hypothetical scenar
 
 One limiting factor here is that we are now down to a very small subset of our initial data; we are looking at 14 out of `r num_rows` voters, `r round(100 * 14/num_rows, 2)`% of the total. This is a small enough sample that statistical tests and graphs will be of dubious value; its small size, however, does make strong trends within it less unlikely, contributing to the overall difficulty of drawing conclusions from it.
 
-### Observation 3: some manual examinations do lean Liberal
+### Observation 3: Some manual examinations do lean Liberal
 
 In this final observation, we extract the rows of responses for the 14 voters who disclosed neither who they voted for, nor their ideology, and compare their responses to that of the overall data set.
 
@@ -348,7 +336,7 @@ private_refused_voters <- raw_data %>%
 
 ```
 
-#### Question 1: the ACA
+#### Question 1: The ACA
 
 Question 1 refers to the Affordable Care Act. The text of the question reads:
 
@@ -374,7 +362,7 @@ table(raw_data$q1,raw_data$ideology) %>%
   `*`(100) %>% round(2)
 ```
 
-This shows strong liberal support for the response "Build on what the law does" (72%), while "Keep the law as it is" lacks strong support among both Liberals and Conservatives (and more among "Don't Know", but this group only represents approximately 4% of the respondents total). 
+This shows strong Liberal support for the response "Build on what the law does" (72%), while "Keep the law as it is" lacks strong support among both Liberals and Conservatives (and more among "Don't Know", but this group only represents approximately 4% of the respondents total). 
 
 If we look at the answers to this question among our small, 14-voter sample, we see:
 
@@ -383,7 +371,7 @@ prop.table(table(private_refused_voters$q1)) %>% `*`(100) %>% round(2)
 ```
 This shows close-to-even support for "Build on what the law does", "Keep the law as it is," and "Repeal the entire law". The overall results could be interpreting as tilting slightly towards an overall sentiment consistent with a Liberal distribution. Although the sample size is small, this is our first indication that it is indeed possible that our (small) hidden population of ideology tilts Liberal.
 
-#### Question 5: reporting on the seriousness of Coronavirus
+#### Question 5: Reporting on the seriousness of Coronavirus
 
 Question 5 on the survey reads:
 
@@ -414,7 +402,7 @@ prop.table(table(private_refused_voters$q5)) %>% `*`(100) %>% round(2)
 ```
 This sample, although small, continues to support the notion of a Liberal-direction ideological lean for these respondents.
 
-#### Question 9: on mask-wearing
+#### Question 9: On mask-wearing
 
 Question 9 on the survey reads:
 
@@ -445,7 +433,7 @@ This shows that Liberals overwhelmingly (92%) choose the response "Wearing a mas
 prop.table(table(private_refused_voters$q9)) %>% `*`(100) %>% round(2)
 ```
 
-So once again, we see a strong - though not overwhelming - liberal tilt in the responses.
+So once again, we see a strong - though not overwhelming - Liberal tilt in the responses.
 
 The answers to these questions indicate that there could indeed be a Liberal ideological bias - possibly even a strong one - among the respondents who chose not to reveal either their ideology or their presidential choice.
 
@@ -463,9 +451,9 @@ fake_ideology_matrix_2 <- ideology_matrix
 
 # Take the 11 refused, and put 6 into liberal, 3 into conservative and 2 into moderate.
 fake_ideology_matrix_2[5,2] <- fake_ideology_matrix_2[5,2] - 11
-fake_ideology_matrix_2[3,2] <- fake_ideology_matrix_2[3,2] + 6
+fake_ideology_matrix_2[3,2] <- fake_ideology_matrix_2[3,2] + 5
 fake_ideology_matrix_2[1,2] <- fake_ideology_matrix_2[1,2] + 3
-fake_ideology_matrix_2[4,2] <- fake_ideology_matrix_2[4,2] + 2
+fake_ideology_matrix_2[4,2] <- fake_ideology_matrix_2[4,2] + 3
 #                  voted2_refused_count
 # Conservative 527                   38
 # Don't Know    68                    6
@@ -477,9 +465,7 @@ fake_ideology_matrix_2[4,2] <- fake_ideology_matrix_2[4,2] + 2
 fake_ideology_chisq_2 <- chisq.test(fake_ideology_matrix_2)
 ```
 
-In fact, it would only be necessary for 6 of the 14 "Refused" voters to be Liberal to push the p-values for our analysis above 0.05, even if the remaining 5 were distributed in approximately equal proportions among the remaining choices (3 to Conservative and 2 to Moderate)[^data_note_1]. So even a slight Liberal tilt in these voters would be enough to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias.
-
-A final note is that it is possible that the now-hypothesized liberal bias among the respondents to this survey who did not disclose their ideology fits within the overall trend, which we saw at the beginning, of stronger-than-national-average support for Joe Biden among the respondents in general. If Joe Biden supporters tend liberal, and if more Biden supporters than Trump supporters participated in this survey (as suggested by the data), then it would be a reasonable supposition that all subsets of the data would likely trend in the same direction. Without perfect knowledge of all participants' ideologies, we can only guess, but this is not part of our hypothesis.
+In fact, with only 5 of the 11 "Refused" voters being redistributed were added to the Liberal total, and the remaining 6 distributed in approximately equal proportions among the remaining choices (3 each to Conservative and Moderate), our `chisq.test` results ate still `r chisq_apa(fake_ideology_chisq_2, format="html", print=FALSE)`[^data_note_1]. So a Liberal tilt in these voters is not even needed to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias. All that is necessary is a redistribution - or reveal - of the "Refused" voters' hypothetical ideologies. It is the concealing of the ideologies, rather than their tilt, which creates the low p-value in the first `chisq.test` examining the differences in ideology between all of the respondents, and those who declined to disclose them.
 
 ## Conclusion
 
@@ -487,24 +473,24 @@ This paper looked at the question of whether voters who chose not to reveal whic
 
 Based on the ambiguity of the ideology of respondents who refused to answer who they voted for, and on the analysis of responses to other questions this subset of respondents answered, we cannot support the hypothesis, which a first-level look at the data seemed to suggest, that voters who choose not to reveal who they vote for have any particular ideological bias compared to those who do.
 
-It also does not *disprove* this possibility, of course. But these results could be surprising to those (including this author) who accepted the general notion of some degree of Conservative bias in undisclosed ideological preferences among voters. It is still possible that this bias exists, but this examination of this dataset does not support it.
+It also does not *disprove* this possibility, of course. But these results could be surprising to those (including this author) who accepted the general concept of some degree of Conservative bias in undisclosed ideological preferences among voters. It is possible that such a bias exists, but this examination of this dataset does not support it.
 
 ## Reflection
 
 The process of writing this paper was rather grueling, chiefly because I went through the class essentially solo and online (during the January term), without peer support or other students to work with, so there were several "rabbit holes" I ended up going down (for several days apiece) that probably could have been avoided with a peer group. Professor Rolfe generously met with me once a week for questions and discussion, which was helpful, but I still think I would have gotten through with less wasted time if I'd been able to work actively with other students.
 
-Some of the time-sinks would be expected in any circumstance of bootstrapping onself into a new area of knowledge; I have a long background in computer programming in various languages dating back to the early 1980s, but they are/were mostly low-level languages initially (C and assembly), and in more recent years, Perl, Objective-C, PHP and Swift, so I have become increasingly used to strongly-typed languages (or the ability to activate strong typing in more permissive languages), and R is pretty different in some important ways. Although the basics of the language are straightforward, some of the nuances about underlying data structures are quite complex (like the difference between vectors, data frames, tables and matrices, and their modes of access), and without strict typing, it's possible to make errors that are difficult to detect.
+Some of the time-sinks would be expected in any circumstance of bootstrapping onself into a new area of knowledge; I have a long background in computer programming in various languages dating back to the early 1980s, but they are/were mostly low-level languages initially (C and assembly), and in more recent years, Perl, Objective-C, PHP and Swift, so I have become increasingly used to strongly-typed languages (or the ability to activate strong typing in more permissive languages), and R is pretty different in some important ways. Although the basics of the language are straightforward, some of the nuances about underlying data structures are quite complex (like the differences between sometimes-interchangeable vectors, data frames, tables and matrices, and their modes of access), and without strict typing, it's possible to make errors that are difficult to detect.
 
-In particular, I got hung up pretty hard on the proper way to run `chisq.test` on frequency tables from the data, and initially was getting an erroneous result due to bad inputs rather than bad data. My case was specific enough that doing productive online searches was grueling and probably more confusing than helpful; I ended up rolling back to a completely manual data set and doing a lot of experimenting to first get the correct results, and then a lot of work to reverse-engineer the manual data back to the proper references for the actual data set. Someone more experienced than me in R could probably have identified my issue immediately, but it took a long time to find on my own.
+In particular, I got hung up pretty hard on the proper way to run `chisq.test` on frequency tables from the data, and initially was getting an erroneous result due to bad inputs rather than bad data. My case was specific enough that doing productive online searches was arduous and probably more confusing than helpful; I ended up rolling back to a completely manual data set and doing a lot of experimenting to first get the correct results, and then did a lot of work to reverse-engineer the manual data back to the proper references for the actual data set. Someone more experienced than me in R could probably have identified my issue immediately, but it took a long time to find on my own.
 
 Once I had that sorted out and began to increase my ability to query the data and look for trends, the process became more enjoyable, and I was surprised to come upon the conclusion that I did - or rather, to find a *lack* of statistical evidence to support my own bias. This is actually quite exciting to me intellectually, even if it feels like something of an ego-check on something I assumed was true about myself. This is exactly why we need statistics and analytics in social science. I would not have had the mechanisms for looking at questions of my own bias prior to undertaking this paper (and was not expecting to find any in its execution).
 
-I can see at this point how powerful deep fluency with data query languages like R, and with statistical principles, will be in future research. I have a lot to learn about R still, and about statistical methods, but I need no convincing on their utility. I look forward to continuing to develop both in future classes as I move through the program.
+I can see at this point how powerful deep fluency with data query languages like R, and with statistical principles, will be in future research. I have a lot to learn about R still, and about statistical methods, but I need no convincing of their utility. I look forward to continuing to develop both in future classes as I move through the DACCS program.
 
 [^study]: Henry J. Kaiser Family Foundation. Kaiser Family Foundation Poll: December 2020 Kaiser Health Tracking Poll/COVID-19 Vaccine Monitor, 2020 [Dataset]. Roper #31118130, Version 2. SSRS [producer]. Cornell University, Ithaca, NY: Roper Center for Public Opinion Research [distributor]. doi:10.25940/ROPER-31118130
 [^dem_races]: Iowa, Main, Montana, North and South Carolina: see https://www.nytimes.com/interactive/2020/11/03/us/elections/results-senate.html
 [^national_turnout]: see https://www.statista.com/statistics/1184621/presidential-election-voter-turnout-rate-state/
-[^data_note_1]: for our purposes here, we retain 3 of the 14 voters in a "Refused" category, rather than redistributing them all among the other choices, in order to retain a percentage-wise balance with the full data set and avoiding creating a 0-value inflection point for the `chisq.test` to factor in, which would skew the results more strongly than our approximation of 3.
+[^data_note_1]: for our purposes here, we retain 3 of the 14 voters in a "Refused" category, rather than redistributing them all among the other choices, in order to retain a percentage-wise balance with the full data set and avoiding creating a 0-value inflection point for the `chisq.test` to factor in, which would skew the results more strongly than our approximation of 3. 
 
 ```{r manual_chisq_UNUSED, include=FALSE}
 # This block of code was an emergency measure to create a manual frequency table.

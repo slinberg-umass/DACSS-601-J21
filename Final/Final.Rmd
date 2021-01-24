@@ -84,9 +84,9 @@ ideology_ct_m <- ideology_count['Moderate']
 ideology_ct_c <- ideology_count['Conservative']
 ideology_ct_l <- ideology_count['Liberal']
 ideology_ct_mcl <- ideology_ct_m + ideology_ct_c + ideology_ct_l
-ideology_pct_m = round(100 * ideology_ct_m / ideology_count_mcl,1)
-ideology_pct_c = round(100 * ideology_ct_c / ideology_count_mcl,1)
-ideology_pct_l = round(100 * ideology_ct_l / ideology_count_mcl,1)
+ideology_pct_m = round(100 * ideology_ct_m / ideology_ct_mcl,1)
+ideology_pct_c = round(100 * ideology_ct_c / ideology_ct_mcl,1)
+ideology_pct_l = round(100 * ideology_ct_l / ideology_ct_mcl,1)
 ```
 
 A small number of respondents either didn't know or refused to disclose their political ideology, but among the `r ideology_ct_mcl` that did, 
@@ -241,7 +241,7 @@ ideology_chisq <- chisq.test(ideology_matrix)
 ideology_fisher <- fisher.test(ideology_matrix)
 ```
 
-These differences are statistically significant (`chisq.test`: (`r chisq_apa(ideology_chisq, format="html", print=FALSE)`); `fisher.test`: (`r ideology_fisher$alternative`), $p=$ `r ideology_fisher$p.value`), and appear to show that voters who refused to disclose who they voted for were more likely to self-report as Conservative, (34% to 31%) and significantly less likely to report as Liberal (14% to 25%). This supports our initial hypothesis that voters who refuse to disclose their ideology are likelier to identify as Conservative.
+These differences are statistically significant (`chisq.test`: (`r chisq_apa(ideology_chisq, format="text", print=FALSE)`); `fisher.test`: (`r ideology_fisher$alternative`), $p=$ `r ideology_fisher$p.value`), and appear to show that voters who refused to disclose who they voted for were more likely to self-report as Conservative, (34% to 31%) and significantly less likely to report as Liberal (14% to 25%). This supports our initial hypothesis that voters who refuse to disclose their ideology are likelier to identify as Conservative.
 
 ### Observation 2: Hidden data in "Refused" ideology category
 
@@ -294,7 +294,6 @@ fake_ideology_props %>%
   # Add the percentages on top of each bar
   geom_text(aes(label=pct), position=position_dodge(width=0.9), vjust=-0.25)
 ```
-With this hypothetical redistribution of 9.9 percentage points from "Refused" into Liberal, we get results that are much closer in balance to the ideologies of all voters. These differences would no longer be statistically significant (`chisq.test`: (`r chisq_apa(fake_ideology_chisq, format="html", print=FALSE)`), and this hypothetical data would suggest that there is *no difference* in ideology between voters who did, and did not, reveal who they voted for in the election.
 
 ```{r fake_ideology_chisq and ideology_fisher, echo=FALSE, warning=FALSE}
 # Make a copy of the ideology matrix
@@ -320,6 +319,8 @@ fake_ideology_matrix[3,2] <- fake_ideology_matrix[3,2] + 11
 fake_ideology_chisq <- chisq.test(fake_ideology_matrix)
 fake_ideology_fisher <- fisher.test(fake_ideology_matrix)
 ```
+
+With this hypothetical redistribution of 9.9 percentage points from "Refused" into Liberal, we get results that are much closer in balance to the ideologies of all voters. These differences would no longer be statistically significant (`chisq.test`: (`r chisq_apa(fake_ideology_chisq, format="text", print=FALSE)`), and this hypothetical data would suggest that there is *no difference* in ideology between voters who did, and did not, reveal who they voted for in the election.
 
 It is very important to note that this far, ***there is no evidence whatsoever*** that there is a significant hidden population of Liberal votes lurking within the actual 12.6% of voters who refused to disclose who they voted for; however, until we rule that out, we need to be cautious in drawing conclusions about the ideologies of "Private" voters in this study.
 
@@ -467,7 +468,7 @@ fake_ideology_matrix_2[4,2] <- fake_ideology_matrix_2[4,2] + 3
 fake_ideology_chisq_2 <- chisq.test(fake_ideology_matrix_2)
 ```
 
-In fact, with only 5 of the 11 "Refused" voters being redistributed were added to the Liberal total, and the remaining 6 distributed in approximately equal proportions among the remaining choices (3 each to Conservative and Moderate), our `chisq.test` results ate still `r chisq_apa(fake_ideology_chisq_2, format="html", print=FALSE)`[^data_note_1]. So a Liberal tilt in these voters is not even needed to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias. All that is necessary is a redistribution - or reveal - of the "Refused" voters' hypothetical ideologies. It is the concealing of the ideologies, rather than their tilt, which creates the low p-value in the first `chisq.test` examining the differences in ideology between all of the respondents, and those who declined to disclose them.
+In fact, with only 5 of the 11 "Refused" voters being redistributed were added to the Liberal total, and the remaining 6 distributed in approximately equal proportions among the remaining choices (3 each to Conservative and Moderate), our `chisq.test` results ate still `r chisq_apa(fake_ideology_chisq_2, format="text", print=FALSE)`[^data_note_1]. So a Liberal tilt in these voters is not even needed to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias. All that is necessary is a redistribution - or reveal - of the "Refused" voters' hypothetical ideologies. It is the concealing of the ideologies, rather than their tilt, which creates the low p-value in the first `chisq.test` examining the differences in ideology between all of the respondents, and those who declined to disclose them.
 
 ## Conclusion
 

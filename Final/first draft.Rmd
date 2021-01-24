@@ -16,13 +16,17 @@ library(tidyverse)
 ## Introduction
 >(1-2 pages) Define the research question or problem you seek to address. What animated your concern with this research question? What are you arguing?
 
-In both the 2016 and 2020 U.S. presidential elections, there was a lot of discussion in the media and among political pundits about the challenges of predicting the outcomes. Nearly every major news source and polling organization reported an overwhelming polling advantage for Democratic candidate Hillary Clinton in the 2016 election, right up to election day itself, with most forecasts at or above a [90% likelihood of her victory](https://www.reuters.com/article/us-usa-election-poll/clinton-has-90-percent-chance-of-winning-reuters-ipsos-states-of-the-nation-idUSKBN1322J1). Most polls [(with some early exceptions)](https://fortune.com/2016/05/25/election-polls-hillary-clinton-donald-trump/) showed her with a comfortable lead throughout the primary season.  Republican Donald Trump's victory in 2016 was a startling surprise for many observers (and voters).
+<span style="background: yellow">Most of this is wordy crap. Stop posing.</span>
 
-Similarly, in 2020, most major observers expected, and predicted, strong Democratic gains in the House and Senate, along with capturing the White House (the "blue wave"). While Democrats did win the presidency, it was by a narrower margin than some predicted; gains in the Senate were smaller than thought to be likely (Democrats gained 4 seats, but 5 races thought to be competitive (Iowa, Main, Montana, North and South Carolina) remained in Republican hands), and Democrats actually lost 11 seats in the House. Once again, the strength of Republican turnout was stronger than many pundits (and statisticians) expected.
+In both the 2016 and 2020 U.S. presidential elections, there was a great deal of discussion in the media and among political pundits about the challenges of predicting the outcomes. Nearly every major news source and polling organization reported a significant polling advantage for Democratic candidate Hillary Clinton in the 2016 election, right up to election day, with most forecasts at or above a [90% likelihood](https://www.reuters.com/article/us-usa-election-poll/clinton-has-90-percent-chance-of-winning-reuters-ipsos-states-of-the-nation-idUSKBN1322J1) of a Clinton victory. Most major polls [(with some early exceptions)](https://fortune.com/2016/05/25/election-polls-hillary-clinton-donald-trump/) showed her with a comfortable lead throughout the primary season.  Republican Donald Trump's victory in 2016 was a startling surprise for many observers (and voters).
 
-One major theory that has sought to explain this discrepancy between predicted and actual outcomes is the idea of the "hidden voter," where polls fail to take into account a significant portion of the voting population because they either (a) do not participate in polls, or (b) do not respond truthfully when asked which candidate(s) they support. ~~Reasons for this could be imagined (a wish to avoid social pressure for openly supporting controversial candidates, or even a desire to actively sabotage polls with misleading information so as to discredit political polling in general), but are not addressed here.~~
+Similarly, in 2020, most major polls and forecsts expected, and predicted, strong Democratic gains in the House and Senate, along with capturing the White House (in what was commonly referred to as the incoming "blue wave"). While Democrats did win the presidency, it was by a narrower margin than some predicted; gains in the Senate were smaller than thought to be likely (Democrats gained 4 seats, but 5 races thought to be competitive remained in Republican hands[^dem_races]), and Democrats actually lost 11 seats in the House. Once again, the strength of Republican turnout was stronger than many pundits (and statisticians) expected.
 
-Anyone concerned about political polling - and politics in general - should be concerned about the accuracy of major predictions in the recent national elections. If it's true that polling is missing a significant portion of the electorate, there are several vectors of action that could be taken up in an effort to better understand the unreported - or misreported - aggregate views of the voting populace. One would be to examine polling methods themselves and see if there are processes that need to be amended to capture a more representative view. Another could be to focus on the quality of polls themselves, and the wording of questions and the options offered as responses, though there is no particular reason to suspect that this has been a recent issue warranting elevated concern. A third would be to look deeper into existing data, and see if there is useful information that could be gleaned from it which could guide future polling efforts, using what may be revealed from a more focused examination of a possibly underestimated or undercounted segment of voters.
+One major theory that has sought to explain this discrepancy between predicted and actual outcomes is the idea of the "hidden voter," where polls fail to take into account a significant portion of the voting population because they either (a) do not participate in polls, or (b) do not respond truthfully when asked which candidate(s) they support. One possible reason for this could involve an aversion to unwanted social pressure from openly supporting controversial candidates. Another could be the sampling mechanisms of the polls themselves, with questions about whether and how they are reaching accurately representative samples of the voting population.
+
+Anyone concerned about political polling - and politics in general - should be equally concerned about the accuracy of major predictions in the recent national elections. If it's true that polling is somehow missing a significant portion of the electorate - whether by omission or misinterpretation - there are several vectors of action that could be taken up in an effort to obtain more accurate polling. One might be to examine polling sampling methods and see if there are processes that need to be amended to capture a more representative range of views - using different modes in an effort to reach different (or) populations. Another is always to examine the granularity of questions and of offered responses, to be sure the results of the polls are not unnecessarily constrained by the wording of questions; basic quality control, though there is no 
+
+There are many vectors of action that could be taken up to improve polling results, from basic quality-control measures around survey composition, question wording and response granularity, to tuning outreach modes and procedures to ensure the most representative possible sampling of the electorate. A third is always to look deeper into existing polling data, and see if there is useful information that could be gleaned from it which could guide future polling efforts, using what may be revealed from a more focused examination of a possibly underestimated or undercounted segment of voters.
 
 This paper offers a few observations along the latter trajectory, using a December 2020 study by the Kaiser Family Foundation which looks at opinions on a range of questions relating to COVID-19, the 2020 election, and aspects of political ideology, with a particular focus on respondents who either declined to divulge who they had voted for, or who did not vote at all.  
 
@@ -68,6 +72,7 @@ The options given for response were:
 Given these options, the breakdown of respondents' answers is:
 
 ```{r, echo=FALSE}
+# store the frequency table for ideology, in reverse order
 ideology_count <- rev(sort(table(raw_data$ideology)))
 ideology_count
 
@@ -83,15 +88,22 @@ raw_data %>%
        x = "")
 ```
 ```{r echo=FALSE}
-ideology_count_mcl <- ideology_count['Moderate'] + ideology_count['Conservative'] + ideology_count['Liberal']
+# Only reference constants once
+ideology_ct_m <- ideology_count['Moderate']
+ideology_ct_c <- ideology_count['Conservative']
+ideology_ct_l <- ideology_count['Liberal']
+ideology_ct_mcl <- ideology_ct_m + ideology_ct_c + ideology_ct_l
+ideology_pct_m = round(100 * ideology_ct_m / ideology_count_mcl,1)
+ideology_pct_c = round(100 * ideology_ct_c / ideology_count_mcl,1)
+ideology_pct_l = round(100 * ideology_ct_l / ideology_count_mcl,1)
 ```
 
-A small number of respondents either didn't know or didn't disclose their political ideology, but among the `r ideology_count_mcl` that did, 
-`r ideology_count['Moderate']` (`r round(100 * ideology_count['Moderate'] / ideology_count_mcl,1)`%) 
+A small number of respondents either didn't know or refused to disclose their political ideology, but among the `r ideology_count_mcl` that did, 
+`r ideology_ct_m` (`r ideology_pct_m`%) 
 identified as "Moderate", 
-`r ideology_count['Conservative']` (`r round(100 * ideology_count['Conservative'] / ideology_count_mcl,1)`%) 
+`r ideology_ct_c` (`r ideology_pct_c`%) 
 identified as "Conservative," and 
-`r ideology_count['Liberal']` (`r round(100 * ideology_count['Liberal'] / ideology_count_mcl,1)`%) 
+`r ideology_ct_l` (`r ideology_pct_l`%) 
 identified as "Liberal",
 
 As this is a self-reported description, we must be careful in drawing too deeply from this variable in isolation, as the labels "Moderate," "Conservative" and "Liberal" are not defined by the survey questions, but they do suggest a reasonable balance of political ideologies if we consider them as roughly "Center," "Right" and "Left" (respectively).
@@ -109,15 +121,14 @@ The response options were:
 - **(DO NOT READ)** Refused
 
 ```{r, echo=FALSE}
+# Store the frequency table for votes, in descending order
 voted2_count <- rev(sort(table(raw_data$voted2)))
 voted2_count
 
 raw_data %>% 
-#  ggplot(aes(x=ideology) ) +
   ggplot(aes(x=reorder(voted2,voted2,function(x)-length(x))
 # Color doesn't add to this plot, the colors don't mean anything
 # and there's no reason to hard-code categories
-#             ,fill=ideology
   )) +
   geom_bar(show.legend = FALSE) +
   labs(title = "ROPER-31118130 poll respondents 2020 presidential vote",
@@ -126,20 +137,114 @@ raw_data %>%
 There are three noteworthy observations here:
 
 ```{r echo=FALSE}
-voted2_count_btr <- voted2_count['Joe Biden'] + voted2_count['Donald Trump'] + voted2_count['Refused'] +
- voted2_count['Someone else'] + voted2_count["Don't know"]
+# Again, only reference constants once
+voted2_ct_biden <- voted2_count['Joe Biden']
+voted2_ct_trump <- voted2_count['Donald Trump']
+voted2_ct_refused <- voted2_count['Refused']
+voted2_ct_else <- voted2_count['Someone else']
+voted2_ct_dontknow <- voted2_count["Don't know"]
+voted2_ct_btred <- voted2_ct_biden + voted2_ct_trump + voted2_ct_refused + 
+  voted2_ct_else + voted2_ct_dontknow
+voted2_ct_trump_refused <- voted2_ct_trump + voted2_ct_refused
+
+voted_pct_biden <- round(100 * voted2_ct_biden / voted2_ct_btred,1)
+voted_pct_trump <- round(100 * voted2_ct_trump / voted2_ct_btred,1)
+voted_pct_refused <- round(100 * voted2_ct_refused / voted2_ct_btred,1)
+voted_pct_trump_refused <- round(100 * voted2_ct_trump_refused / voted2_ct_btred,1)
+voted_pct_total <- round(100 * voted2_ct_btred / num_rows,1)
+
+voted2_nonvotes <- num_rows - voted2_ct_btred
+voted_pct_nonvotes <- round(100 * voted2_nonvotes / num_rows,1)
 ```
 1. **A strong preference towards Joe Biden**<br>
-Despite a somewhat balanced `ideology` variable, of the `r voted2_count_btr` respondents who voted in the election,
-`r voted2_count['Joe Biden']` (`r round(100 * voted2_count['Joe Biden'] / voted2_count_btr,1)`%) voted for Joe Biden,
-`r voted2_count['Donald Trump']` (`r round(100 * voted2_count['Donald Trump'] / voted2_count_btr,1)`%) voted for Donald Trump, and 
-`r voted2_count['Refused']` (`r round(100 * voted2_count['Refused'] / voted2_count_btr,1)`%) refused to answer the question. Joe Biden won the national popular vote with [51.3% to Donald Trump's 46.9%](https://cookpolitical.com/2020-national-popular-vote-tracker), which means the results from this survey disproportionately represent Joe Biden voters as compared the national totals.
+Despite a somewhat balanced `ideology` variable, of the `r voted2_ct_btred` respondents who voted in the election,
+`r voted2_ct_biden` (`r voted_pct_biden`%) voted for Joe Biden,
+`r voted2_ct_trump` (`r voted_pct_trump`%) voted for Donald Trump, and
+`r voted2_ct_refused` (`r voted_pct_refused`%) refused to answer the question (see below). Joe Biden won the national popular vote with [51.3% to Donald Trump's 46.9%](https://cookpolitical.com/2020-national-popular-vote-tracker), which means the results from this survey disproportionately represent Joe Biden voters as compared the national totals.
 
 1. **A significant number of non-votes**<br>
-(details)
-1. **A significant number of "Refused" (to answer) responses**<br>
-foo
+`r voted2_nonvotes` respondents (`r voted_pct_nonvotes`%) of the total did not vote in the presidential election, and (`r voted_pct_total`%) did. While the visual impression of nonvotes in the diagram above seems high, the respondents to this poll still significantly exceeded the national turnout rate of 66.7%.[^national_turnout]
 
+1. **A significant number of "Refused" (to answer) responses**<br>
+As noted above, `r voted2_ct_refused` respondents (`r voted_pct_refused`% of the total who voted) refused to answer who they voted for. Even if it turned out that 100% of these respondents had voted for Trump, it would still only result in a total turnout of `r voted_pct_trump_refused`%, well short of his 46.9% national total. The Trump vote is still under-represented in this poll.
+
+This final observation, however, does not imply that the distribution of ideology within the group of voters who refused to answer who they voted for does not fit the national average, and this is the group we are going to investigate further, with the goal of trying to get a sense of how these respondents might have voted based on answers to other questions from the survey.
+
+### Observation 1: ideology of "Refused" voters
+
+The most obvious observation to make would be: how do the voters who refused to answer who they voted for for president in the 2020 election (hereafter "private voters") self-report their political views?
+
+```{r echo=FALSE}
+ideology_by_refused_voted2 <- raw_data %>%
+  select(ideology, voted2) %>%
+  filter(voted2 == "Refused")
+voted2_refused_count <- rev(sort(table(ideology_by_refused_voted2$ideology)))
+voted2_refused_count
+```
+
+```{r echo=FALSE}
+ideology_by_refused_voted2 %>% 
+  ggplot(aes(x=reorder(ideology,ideology,function(x)-length(x))
+  )) +
+  geom_bar(show.legend = FALSE) +
+  labs(title = "\"Private voters\" by ideology",
+       x = "")
+```
+```{r}
+group <- c("all", "all", "all", "all", "all", "refused", "refused", "refused", "refused", "refused")
+ideology <- c("Moderate", "Conservative", "Liberal",  "Don't Know", "Refused", "Moderate", "Conservative", "Liberal",  "Don't Know", "Refused")
+totals <- c(617,527,424,68,40,37,38,16,6,14)
+A <- data.frame(group,ideology,totals)
+A_xtabs <- xtabs(totals~group+ideology,data=A)
+chisq.test(A_xtabs,correct=F)
+fisher.test(A_xtabs)
+
+obs <- c(37,38,16,6,14)
+exp <- c(617/1676,527/1676,424/1676,68/1676,40/1676)
+chisq.test(obs, p=exp)
+```
+We can see from this that a majority of respondents who did not disclose which presidential candidate they voted for self-identified as either "Conservative" or "Moderate". 
+
+To take a deeper look at this tendency, we can convert the ideological share of each group of voters - all voters, and "private voters" - into percentages of their respective sums, and compare the percentages. The following chart shows the difference in these percentages; we can see that a higher percentage of "private voters" self-report as "Conservative" than all voters do, a smaller percentage of them self-report as "Moderate" than all voters, and a significantly smaller percentage self-report as "Liberal". (Approximately 13# of "private voters" also declined to share their ideology.)
+
+```{r echo=FALSE, warning=FALSE}
+# Combine proportion tables for ideology for all voters, and for those who
+# refused to say who they voted for.
+ideology_props <- as.data.frame(prop.table(ideology_count)) %>%
+  # Remane the "Freq" column to "all"
+  rename(all = Freq)
+# Import the voted2_refused_count column into a new "refused" column
+ideology_props$refused <- prop.table(voted2_refused_count)
+
+# Flatten the "all" and "refused" columns into "scope" and "value"
+ideology_props <- ideology_props %>%
+  gather('all', 'refused', key = 'scope', value = 'pct')
+# Convert the 0-1 pct value to 0-100 for display purposes
+ideology_props$pct <- ideology_props$pct * 100
+
+ideology_props %>% 
+  ggplot(mapping = aes(x=Var1, y=pct, fill=scope)) + 
+  labs(title = "Poltical ideology by `voted2` response scope", 
+       subtitle = "A comparison of ideology for all voting respondents vs. refused voters (by percentages)",
+       x = "Ideology"
+       ) +
+  scale_fill_discrete(name="Scope", labels = c("All voters", "Private voters")) +
+  geom_bar(stat = "identity", position = "dodge")
+```
+```{r}
+ideology_freq <- as.data.frame(ideology_count)
+# Import the voted2_refused_count column into a new "refused" column
+ideology_freq$refused <- as.data.frame(voted2_refused_count)$Freq
+# this isn't fucking working.
+# This structure is not the same thing as the data frame I made manually.
+# even though the class IS a data.frame.
+```
+
+Now run the `chisq.test()` on this xtab object:
+
+```{r}
+chisq.test(A_xtabs,correct=F)
+```
 
 ## Visualization
 >(2-3 pages): Develop a visualization that best addresses your research question. Describe the visualization in detail. Then, explain what other options you considered for visualizing the data, and explain why the option you chose was the best option.
@@ -152,3 +257,6 @@ foo
 
 ## Bibliography
 >Every paper should include a bibliography which appropriately cites anything used in the formulation of the paper. If you have questions, please talk to me. Do not plagiarize.
+
+[^dem_races]: Iowa, Main, Montana, North and South Carolina: see https://www.nytimes.com/interactive/2020/11/03/us/elections/results-senate.html
+[^national_turnout]: see https://www.statista.com/statistics/1184621/presidential-election-voter-turnout-rate-state/

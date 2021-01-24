@@ -72,8 +72,8 @@ The options given for response were:
 Given these options, the breakdown of respondents' answers is:
 
 ```{r, echo=FALSE}
-# store the frequency table for ideology, in reverse order
-ideology_count <- rev(sort(table(raw_data$ideology)))
+# store the frequency table for ideology
+ideology_count <- table(raw_data$ideology)
 ideology_count
 
 raw_data %>% 
@@ -121,8 +121,8 @@ The response options were:
 - **(DO NOT READ)** Refused
 
 ```{r, echo=FALSE}
-# Store the frequency table for votes, in descending order
-voted2_count <- rev(sort(table(raw_data$voted2)))
+# Store the frequency table for votes
+voted2_count <- table(raw_data$voted2)
 voted2_count
 
 raw_data %>% 
@@ -178,7 +178,7 @@ The most obvious observation to make would be: how do the voters who refused to 
 ideology_by_refused_voted2 <- raw_data %>%
   select(ideology, voted2) %>%
   filter(voted2 == "Refused")
-voted2_refused_count <- rev(sort(table(ideology_by_refused_voted2$ideology)))
+voted2_refused_count <- table(ideology_by_refused_voted2$ideology)
 voted2_refused_count
 ```
 

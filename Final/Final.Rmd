@@ -1,9 +1,11 @@
 ---
-title: "Non- and private-voting trends: Kaiser survey data 12-2020"
+title: 'Non- and private-voting trends: Kaiser survey data 12-2020'
+author: "Steve Linberg"
+date: "23 January 2021"
+output:
+  pdf_document: default
+  html_notebook: default
 subtitle: DACSS 601 Final Paper
-author: Steve Linberg
-date: 23 January 2021
-output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
@@ -87,7 +89,7 @@ ideology_pct_c = round(100 * ideology_ct_c / ideology_count_mcl,1)
 ideology_pct_l = round(100 * ideology_ct_l / ideology_count_mcl,1)
 ```
 
-A small number of respondents either didn't know or refused to disclose their political ideology, but among the `r ideology_count_mcl` that did, 
+A small number of respondents either didn't know or refused to disclose their political ideology, but among the `r ideology_ct_mcl` that did, 
 `r ideology_ct_m` (`r ideology_pct_m`%) 
 identified as Moderate, 
 `r ideology_ct_c` (`r ideology_pct_c`%) 

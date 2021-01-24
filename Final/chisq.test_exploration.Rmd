@@ -1,9 +1,10 @@
 ---
 title: "Chisq.test explorations"
 output:
+  html_notebook: default
+  pdf_document: default
   html_document:
     df_print: paged
-  html_notebook: default
 ---
 
 The question is: can `chisq.test()` be used to compare the frequency distributions of a table of data, and a subset of that table? More specifically, we have a data set that includes columns for "ideology" (Conservative, Moderate, Liberal, Refused, Don't Know), and for "voted" (Biden, Trump, Refused, Someone Else, Don't Know). We want to see if the distribution of "ideology" for the subset of rows for which "voted" = "Refused" (refused to say) is the same as the distribution of "ideology" for all rows, or if it tilts in some direction.
@@ -75,7 +76,7 @@ class(A_xtabs)
 
 ```
 
-Finally, run a `chisq.test()` with a manual version of the dataset and a calculated expected values (as ratios) list, based on the subset as the observed values, and the expected values as ratios of the full set values to the size of the set. I woulc expect this test to give the same p-value as the above test:
+Finally, run a `chisq.test()` with a manual version of the dataset and a calculated expected values (as ratios) list, based on the subset as the observed values, and the expected values as ratios of the full set values to the size of the set. I would expect this test to give the same p-value as the above test:
 
 ```{r}
 obs <- c(37,38,16,6,14)
@@ -90,6 +91,5 @@ Running the Fisher test gives a different, but still very tiny P-value:
 ```{r}
 fisher.test(A_xtabs)
 ```
-
 
 ...what am I doing wrong?

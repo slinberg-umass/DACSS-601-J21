@@ -6,6 +6,7 @@ output:
   pdf_document: default
   html_notebook: default
 subtitle: DACSS 601 Final Paper
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}

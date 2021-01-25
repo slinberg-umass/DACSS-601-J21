@@ -100,7 +100,7 @@ identified as Liberal.
 
 As this is a self-reported description, we must be careful in drawing too deeply from this variable in isolation, as the labels Moderate, Conservative and Liberal are not defined by the survey questions, but they do suggest a reasonable balance of political ideologies if we consider them as roughly "Center," "Right" and "Left" (respectively).
 
-(A note on terminology: in this paper, the terms Moderate, Conservative and Liberal are capitalized when referring to survey categories, rather than the general meanings or usage of the words; the survey does not actually define the terms, nor was it defined for the respondents.)
+(A note on terminology: in this paper, the terms Moderate, Conservative and Liberal are capitalized when referring to survey categories, rather than the general meanings or usage of the words.)
 
 A look at the `voted2` variable yields some interesting observations. The text of the question is
 
@@ -325,9 +325,9 @@ With this hypothetical redistribution of 9.9 percentage points from "Refused" in
 
 It is very important to note that this far, ***there is no evidence whatsoever*** that there is a significant hidden population of Liberal votes lurking within the actual 12.6% of voters who refused to disclose who they voted for; however, until we rule that out, we need to be cautious in drawing conclusions about the ideologies of "Private" voters in this study.
 
-This merits further investigation. How can we show that this hypothetical scenario - that the bulk of the voters who refused to disclose either their political ideology or who they voted for are actually Liberal? One way would be to compare their answers to other questions on the survey which correlate strongly with, or against, responses from Liberal voters.
+This merits further investigation. How can we show that this hypothetical scenario - that a majority of the voters who refused to disclose either their political ideology or who they voted for are not actually Conservative? One way would be to compare the answers to other questions on the survey which correlate strongly with, or against, responses from Conservative and Liberal voters.
 
-One limiting factor here is that we are now down to a very small subset of our initial data; we are looking at 14 out of `r num_rows` voters, `r round(100 * 14/num_rows, 2)`% of the total. This is a small enough sample that statistical tests and graphs will be of dubious value; its small size, however, does make strong trends within it less unlikely, contributing to the overall difficulty of drawing conclusions from it.
+One limiting factor here is that we are now down to a very small subset of our initial data; we are looking at 14 out of `r num_rows` voters, `r round(100 * 14/num_rows, 2)`% of the total. This is a small enough sample that statistical tests and graphs will be of dubious value; its small size increases the statistical potential of unusually strong trends within it, contributing to the overall difficulty of drawing conclusions from it, but also making an unbalancing effect stemming from it more possible than a larger set might.
 
 ### Observation 3: Some manual examinations do lean Liberal
 
@@ -469,13 +469,13 @@ fake_ideology_matrix_2[4,2] <- fake_ideology_matrix_2[4,2] + 3
 fake_ideology_chisq_2 <- chisq.test(fake_ideology_matrix_2)
 ```
 
-In fact, with only 5 of the 11 "Refused" voters being redistributed were added to the Liberal total, and the remaining 6 distributed in approximately equal proportions among the remaining choices (3 each to Conservative and Moderate), our `chisq.test` results ate still `r chisq_apa(fake_ideology_chisq_2, format="text", print=FALSE)`[^data_note_1]. So a Liberal tilt in these voters is not even needed to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias. All that is necessary is a redistribution - or reveal - of the "Refused" voters' hypothetical ideologies. It is the concealing of the ideologies, rather than their tilt, which creates the low p-value in the first `chisq.test` examining the differences in ideology between all of the respondents, and those who declined to disclose them.
+In fact, with only 5 of the 11 "Refused" voters being redistributed added to the Liberal total, and the remaining 6 distributed in approximately equal proportions among the remaining choices (3 each to Conservative and Moderate), our `chisq.test` results are still `r chisq_apa(fake_ideology_chisq_2, format="text", print=FALSE)`[^data_note_1]. So a Liberal tilt in these voters is not even needed to prevent us from supporting our initial hypothesis, and the answers we saw to the questions above provide fairly strong support for the existence of this bias. All that is necessary is a redistribution - or reveal - of the "Refused" voters' hypothetical ideologies. It is the concealing of the ideologies, rather than their tilt, which creates the low p-value in the first `chisq.test` examining the differences in ideology between all of the respondents, and those who declined to disclose them.
 
 ## Conclusion
 
 This paper looked at the question of whether voters who chose not to reveal which presidential candidate they voted for, in data from a recent Kaiser Family Foundation survey, had a hidden ideological bias that could account for some of the difficulty in predicting the strength of Conservative turnout in recent elections.
 
-Based on the ambiguity of the ideology of respondents who refused to answer who they voted for, and on the analysis of responses to other questions this subset of respondents answered, we cannot support the hypothesis, which a first-level look at the data seemed to suggest, that voters who choose not to reveal who they vote for have any particular ideological bias compared to those who do.
+Based on the ambiguity of the ideology of respondents who refused to answer who they voted for, and on the analysis of responses to other questions this subset of respondents answered, we cannot support the hypothesis -- which a first-level examination of the data seemed to suggest -- that voters who choose not to reveal who they vote for have any particular ideological bias compared to those who do.
 
 It also does not *disprove* this possibility, of course. But these results could be surprising to those (including this author) who accepted the general concept of some degree of Conservative bias in undisclosed ideological preferences among voters. It is possible that such a bias exists, but this examination of this dataset does not support it.
 
